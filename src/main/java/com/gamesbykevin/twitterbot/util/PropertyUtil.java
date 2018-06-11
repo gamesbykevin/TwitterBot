@@ -37,7 +37,7 @@ public class PropertyUtil {
     /**
      * Are we running this application in IntelliJ? (yes=true, no=false)
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     public static Properties getPropertyFile(String filename) {
 
