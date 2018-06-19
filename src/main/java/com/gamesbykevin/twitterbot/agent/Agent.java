@@ -103,7 +103,7 @@ public class Agent {
                     long userId = nonfollowers.get(index);
 
                     //let's try to un-follow this user
-                    if (unfollow(this, twitter, userId)) {
+                    if (unfollow(this, twitter, userId, false)) {
                         message = "User " + userId + " un-followed";
                         displayMessage(message, getWriter());
                         text += message + "\n";
@@ -116,9 +116,7 @@ public class Agent {
                 }
             }
 
-            message = "New ratio is " + getFollowRatio();
-            displayMessage(message, getWriter());
-            text = message + "\n" + message;
+            displayMessage("New ratio is " + getFollowRatio(), getWriter());
         }
 
         displayMessage("Total followers: " + getFollowers().size(), getWriter());
@@ -164,10 +162,11 @@ public class Agent {
         getListPendingFollow().save();
         getListPendingUnfollow().save();
         getListBlocked().save();
+        getListIgnore().save();
 
         //append to our text message
         text = "Followers: " + getFollowers().size() + "\n" +
-                "Following: " + getFollowing().size() + "\n" +
+               "Following: " + getFollowing().size() + "\n" +
                 text;
 
         //send email
@@ -229,6 +228,10 @@ public class Agent {
 
     protected TwitterList getListBlocked() {
         return this.twitterLists.get(Key.Blocked);
+    }
+
+    protected TwitterList getListIgnore() {
+        return this.twitterLists.get(Key.Ignore);
     }
 
     public void recycle() {

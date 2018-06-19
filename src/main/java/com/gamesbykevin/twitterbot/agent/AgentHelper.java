@@ -123,7 +123,7 @@ public class AgentHelper {
         //let's un-follow our new un-followers
         displayMessage("Unfollowing new un-followers", agent.getWriter());
         for (long id : unfollow) {
-            unfollow(agent, twitter, id);
+            unfollow(agent, twitter, id, true);
         }
 
         //let's see if we can un-follow anyone in our pending list
@@ -135,7 +135,7 @@ public class AgentHelper {
 
         //un-follow users in the pending list
         for (String id : users) {
-            unfollow(agent, twitter, Long.parseLong(id));
+            unfollow(agent, twitter, Long.parseLong(id), false);
         }
     }
 
@@ -144,9 +144,11 @@ public class AgentHelper {
      * If we have already reached our unfollow limit the user will be added to the pending unfollow list
      * @param twitter Object used to interact with twitter
      * @param id The id of the user we want to un-follow
+     * @param ignore Do we not want to follow this user again in the future even if they follow us
      * @return true if the user was followed, false otherwise
      */
-    protected static boolean unfollow(Agent agent, Twitter twitter, long id) {
+    protected static boolean unfollow(Agent agent, Twitter twitter, long id, boolean ignore) {
+
         try {
 
             //make sure we haven't passed the unfollow limit
@@ -166,6 +168,14 @@ public class AgentHelper {
                 if (TwitterList.hasValue(agent.getFollowing(), id))
                     TwitterList.removeValue(agent.getFollowing(), id);
 
+                //if we are un-following and we don't want to follow them back in the future we will ignore them
+                if (ignore) {
+
+                    //if it isn't in the ignore list yet let's add it
+                    if (!agent.getListIgnore().hasValue(id))
+                        agent.getListIgnore().addValue(id);
+                }
+
                 //success
                 return true;
             }
@@ -175,7 +185,9 @@ public class AgentHelper {
                 if (!agent.getListPendingUnfollow().hasValue(id))
                     agent.getListPendingUnfollow().addValue(id);
             }
+
         } catch (TwitterException e) {
+
             //either of these errors means the user has blocked us from following them
             if (e.getErrorCode() == 34 || e.getErrorCode() == 404 ||
                     e.getStatusCode() == 34 || e.getStatusCode() == 404) {
@@ -186,6 +198,7 @@ public class AgentHelper {
             }
 
             e.printStackTrace();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -262,6 +275,17 @@ public class AgentHelper {
                 //return false
                 return false;
             }
+
+            //we also don't want to follow if we are ignoring the user
+            if (agent.getListIgnore().hasValue(id)) {
+
+                //if this exists in our pending list,remove it because we don't want to follow
+                if (agent.getListPendingFollow().hasValue(id))
+                    agent.getListPendingFollow().removeValue(id);
+
+                return false;
+            }
+
 
             //if the user previously blocked us, don't follow again
             if (agent.getListBlocked().hasValue(id))

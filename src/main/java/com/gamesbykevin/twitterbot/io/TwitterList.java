@@ -16,11 +16,23 @@ public class TwitterList {
      */
     public enum Key {
 
+        //list of users we are following
         Followers("followers.txt"),
+
+        //store the last time the bot run to prevent us from being blocked by twitter
         LastRun("lastrun.txt"),
+
+        //list of users we want to follow
         PendingFollow("pendingFollow.txt"),
+
+        //list of users we want to unfollow
         PendingUnfollow("pendingUnfollow.txt"),
-        Blocked("blocked.txt");
+
+        //list of users who blocked us
+        Blocked("blocked.txt"),
+
+        //list of users we don't want to follow
+        Ignore("ignore.txt");
 
         private final String filename;
 
