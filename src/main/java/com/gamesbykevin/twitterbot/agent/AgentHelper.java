@@ -151,7 +151,7 @@ public class AgentHelper {
 
         try {
 
-            //make sure we haven't passed the unfollow limit
+            //make sure we haven't passed the un-follow limit
             if (agent.getUnfollows() <= UNFOLLOW_LIMIT) {
 
                 //increase the number of un-follows

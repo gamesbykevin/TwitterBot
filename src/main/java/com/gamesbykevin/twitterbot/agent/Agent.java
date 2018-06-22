@@ -166,8 +166,12 @@ public class Agent {
 
         //append to our text message
         text = "Followers: " + getFollowers().size() + "\n" +
-               "Following: " + getFollowing().size() + "\n" +
-                text;
+               "Following: " + getFollowing().size() + "\n\n" +
+               "List summary" + "\n" +
+               "Ignore       : " + getListIgnore().getValues().size() + "\n" +
+               "Blocked      : " + getListBlocked().getValues().size() + "\n" +
+               "Pend Follow  : " + getListPendingFollow().getValues().size() + "\n" +
+               "Pend Unfollow: " + getListPendingUnfollow().getValues().size() + "\n";
 
         //send email
         Email.sendEmail("Twitter Update", text);
